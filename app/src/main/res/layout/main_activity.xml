@@ -19,7 +19,7 @@
         android:layout_marginBottom="20dp"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/pre_btn"
+            android:id="@+id/btnPrev"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -37,7 +37,7 @@
             android:textColor="@android:color/black"
             android:background="@drawable/black_border_white"/>
         <Button
-            android:id="@+id/next_btn"
+            android:id="@+id/btnNext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
