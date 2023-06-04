@@ -23,6 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="20dp"
             android:text="이 전" />
         <TextView
             android:id="@+id/monthYearText"
@@ -40,6 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="20dp"
             android:text="다 음" />
     </LinearLayout>
     <LinearLayout
