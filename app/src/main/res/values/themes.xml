@@ -10,7 +10,7 @@
     </style>
 
     <style name="Windows98ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/windows98_button_background</item>
+        <item name="android:background">@drawable/windows98_button_pattern</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:fontFamily">@font/font</item>
     </style>
