@@ -24,33 +24,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        setCalendar();
+        selectedDate = LocalDate.now();
+        calendarView = findViewById(R.id.recyclerView);
+        btnPrev = findViewById(R.id.btnPrev);
+        btnNext = findViewById(R.id.btnNext);
+        tvMonth = findViewById(R.id.tvMonth);
+        setMonth();
+
+        System.out.println("Set");
 
         btnNext.setOnClickListener(v->{
             selectedDate.plusMonths(1);
-            setCalendar();
+            setMonth();
         });
 
         btnPrev.setOnClickListener(v->{
             selectedDate.minusMonths(1);
-            setCalendar();
+            setMonth();
         });
-    }
-
-    private void setCalendar() {
-        calendarView = findViewById(R.id.recyclerView);
-        btnPrev = calendarView.findViewById(R.id.btnPrev);
-        btnNext = calendarView.findViewById(R.id.btnNext);
-        tvMonth = findViewById(R.id.tvMonth);
-        selectedDate = LocalDate.now();
-        setMonth();
     }
 
     private void setMonth() {
         tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
         ArrayList<String> days = daysInMonthArray(selectedDate);
         CalendarAdapter adapter = new CalendarAdapter(days);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(this, 7);
+        RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
         calendarView.setLayoutManager(manager);
         calendarView.setAdapter(adapter);
     }
