@@ -25,6 +25,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
         setCalendar();
+
+        btnNext.setOnClickListener(v->{
+            selectedDate.plusMonths(1);
+            setCalendar();
+        });
+
+        btnPrev.setOnClickListener(v->{
+            selectedDate.minusMonths(1);
+            setCalendar();
+        });
     }
 
     private void setCalendar() {
