@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView calendarView;
+    CalendarAdapter adapter;
     LocalDate selectedDate;
+    ArrayList<String> days;
     Button btnPrev, btnNext;
     TextView tvMonth;
 
@@ -34,23 +37,34 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Set");
 
         btnNext.setOnClickListener(v->{
-            selectedDate.plusMonths(1);
-            setMonth();
+            selectedDate = selectedDate.plusMonths(1);
+            updateMonth();
         });
 
         btnPrev.setOnClickListener(v->{
-            selectedDate.minusMonths(1);
-            setMonth();
+            selectedDate = selectedDate.minusMonths(1);
+            updateMonth();
         });
     }
 
     private void setMonth() {
         tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
-        ArrayList<String> days = daysInMonthArray(selectedDate);
-        CalendarAdapter adapter = new CalendarAdapter(days);
+        days = daysInMonthArray(selectedDate);
+        adapter = new CalendarAdapter(days);
         RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
         calendarView.setLayoutManager(manager);
         calendarView.setAdapter(adapter);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateMonth() {
+        tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
+        days = daysInMonthArray(selectedDate);
+
+        System.out.println(String.format(monthSelector(selectedDate)+"月 ")+days);
+
+        adapter.setDays(days);
+        adapter.notifyDataSetChanged();
     }
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
@@ -61,17 +75,8 @@ public class MainActivity extends AppCompatActivity {
         int firstDayOfWeek = startOfMonth.getDayOfWeek().getValue(); // 선택한 달의 첫 번째 주의 첫 번째 날에 대한 요일
 
         for(int i = 1; i <= 42; i++) { // 한 달 4주, 이전 달 마지막 주, 다음 달 첫 주 총 6주 (42일). 달력 정렬용.
-            if(i <= firstDayOfWeek) {
+            if(i <= firstDayOfWeek || i > endOfMonth + firstDayOfWeek) {
                 days.add("");
-            } else if (i > endOfMonth + firstDayOfWeek) {
-                LocalDate next = LocalDate.now().plusMonths(1);
-                int nextFirst = next.withDayOfMonth(i-endOfMonth).getDayOfWeek().getValue();
-                int last = date.withDayOfMonth(endOfMonth).getDayOfWeek().getValue();
-                if(last - nextFirst>1){
-                    days.add("");
-                } else {
-                    break;
-                }
             } else {
                 days.add(String.valueOf(i - firstDayOfWeek));
             }

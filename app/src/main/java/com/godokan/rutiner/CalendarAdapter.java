@@ -26,6 +26,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         this.days = days;
     }
 
+    public void setDays(ArrayList<String> days) {this.days = days;}
+
     @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
