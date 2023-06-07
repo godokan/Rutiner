@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView calendarView;
     CalendarAdapter adapter;
     LocalDate selectedDate;
-    ArrayList<String> days;
+    ArrayList<LocalDate> days;
     Button btnPrev, btnNext;
     TextView tvMonth;
 
@@ -60,25 +60,36 @@ public class MainActivity extends AppCompatActivity {
     private void updateMonth() {
         tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
         days = daysInMonthArray(selectedDate);
-
-        System.out.println(String.format(monthSelector(selectedDate)+"月 ")+days);
-
         adapter.setDays(days);
         adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<String> daysInMonthArray(LocalDate date) {
-        ArrayList<String> days = new ArrayList<>();
+    private ArrayList<LocalDate> daysInMonthArray(LocalDate date) {
+        ArrayList<LocalDate> days = new ArrayList<>();
         Month month = Month.from(date);
         int endOfMonth = month.length(date.isLeapYear());
         LocalDate startOfMonth = date.withDayOfMonth(1);
         int firstDayOfWeek = startOfMonth.getDayOfWeek().getValue(); // 선택한 달의 첫 번째 주의 첫 번째 날에 대한 요일
 
-        for(int i = 1; i <= 42; i++) { // 한 달 4주, 이전 달 마지막 주, 다음 달 첫 주 총 6주 (42일). 달력 정렬용.
-            if(i <= firstDayOfWeek || i > endOfMonth + firstDayOfWeek) {
-                days.add("");
+        int totalDays = endOfMonth + firstDayOfWeek;
+        int rowCount = (totalDays <= 35) ? 5 : 6;
+
+        boolean isCurrentMonth = false;
+
+        for (int i = 1; i <= rowCount * 7; i++) {
+            if (i <= firstDayOfWeek) {
+                if(firstDayOfWeek==7)
+                    days.clear();
+                else days.add(null);
+            } else if (i > totalDays) {
+                if (isCurrentMonth) {
+                    days.add(null);
+                } else {
+                    days.add(LocalDate.of(date.getYear(), date.getMonth(), i - firstDayOfWeek));
+                }
             } else {
-                days.add(String.valueOf(i - firstDayOfWeek));
+                days.add(LocalDate.of(date.getYear(), date.getMonth(), i - firstDayOfWeek));
+                isCurrentMonth = true;
             }
         }
         return days;
