@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class RutinDbHelper extends SQLiteOpenHelper {
     private static RutinDbHelper rutinDbHelper = null;
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Rutiner.db";
     public static final String SQL_CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS "+ TableInfo.TABLE_NAME + " (" +

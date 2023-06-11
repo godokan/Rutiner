@@ -48,10 +48,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             holder.dayView.setText("");
         }
 
-        if ((position + 1) % 7 == 0)
-            holder.dayView.setTextColor(Color.parseColor("#ff33b5e5"));
-        else if (position % 7 == 0)
+        if (position % 7 == 0)
             holder.dayView.setTextColor(Color.parseColor("#ffff4444"));
+        else if ((position + 1) % 7 == 0) {
+            System.out.println(position);
+            holder.dayView.setTextColor(Color.parseColor("#ff33b5e5"));
+        } else
+            holder.dayView.setTextColor(Color.parseColor("#6a6a6a"));
+
 
         holder.dayView.setOnClickListener(new View.OnClickListener() {
             @Override

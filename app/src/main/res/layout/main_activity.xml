@@ -32,10 +32,11 @@
             android:layout_weight="2"
             android:gravity="center"
             android:text="6月"
+            android:textStyle="bold"
             android:textAlignment="center"
             android:textSize="25sp"
             android:textColor="@android:color/black"
-            android:background="@drawable/black_border_white"/>
+            android:background="@drawable/black_border_white" />
         <Button
             android:id="@+id/btnNext"
             android:layout_width="0dp"
@@ -119,8 +120,6 @@
             android:textAlignment="center"
             android:textColor="@android:color/holo_blue_light" />
     </LinearLayout>
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

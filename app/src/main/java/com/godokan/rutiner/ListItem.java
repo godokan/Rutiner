@@ -1,14 +1,14 @@
 package com.godokan.rutiner;
 
 public class ListItem {
-    private final int id;
+    private final String id;
     private final String type;
     private final String name;
     private final String context;
     private final String date;
-    private final boolean flag;
+    private final String flag;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -28,11 +28,11 @@ public class ListItem {
         return date;
     }
 
-    public boolean isDone() {
+    public String getFlag() {
         return flag;
     }
 
-    public ListItem(int id, String type, String name, String context, String date, boolean flag) {
+    public ListItem(String id, String type, String name, String context, String date, String flag) {
         this.id = id;
         this.type = type;
         this.name = name;
