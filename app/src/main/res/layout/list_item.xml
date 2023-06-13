@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8sp"
         android:layout_marginStart="8sp"
+        android:layout_marginEnd="8dp"
         android:textSize="30sp"
         android:textStyle="bold"
         android:fontFamily="@font/unifont"
@@ -24,6 +25,7 @@
         android:textSize="20sp"
         android:fontFamily="@font/unifont"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         tools:text="Context"
         android:background="@color/white" />
     <LinearLayout
@@ -31,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         android:background="@color/white" >
         <TextView
@@ -47,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:layout_marginEnd="8dp"
             android:textSize="20sp"
             android:fontFamily="@font/unifont"
             tools:text="FLAG" />

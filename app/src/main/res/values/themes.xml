@@ -5,9 +5,10 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/windows98_background</item>
         <item name="android:textColorPrimary">@android:color/black</item>
-        <item name="android:background">@drawable/black_border</item>
         <item name="android:buttonStyle">@style/Windows98ButtonStyle</item>
-        <item name="android:alertDialogTheme">@style/AlertDialog</item>
+        <item name="android:alertDialogTheme">@style/Windows98Theme.AlertDialog</item>
+        <item name="android:popupMenuStyle">@style/Windows98Theme.menuButton</item>
+        <item name="android:contextPopupMenuStyle">@style/Windows98Theme.menuButton</item>
     </style>
 
     <style name="Windows98ButtonStyle" parent="Widget.AppCompat.Button">
@@ -20,10 +21,18 @@
         <item name="android:fontFamily">@font/font</item>
     </style>
 
-    <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="Windows98Theme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/white</item>
         <item name="android:fontFamily">@font/font</item>
         <item name="colorAccent">@color/black</item>
         <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="Windows98Theme.menuButton" parent="Widget.AppCompat.Light.PopupMenu">
+        <item name="android:popupBackground">@color/white</item>
+        <item name="itemBackground">@color/white</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/font</item>
     </style>
 </resources>

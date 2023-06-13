@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -62,7 +64,9 @@ public class DetailAccess extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view);
+                // PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view);
+                PopupMenu popupMenu = new PopupMenu(DetailAccess.this, view, Gravity.END, 0, R.style.Windows98Theme_menuButton);
+
                 getMenuInflater().inflate(R.menu.edit_list,popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -87,12 +91,12 @@ public class DetailAccess extends Activity {
                 AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
 
                 ListItem listItem = (ListItem) adapterView.getItemAtPosition(position);
-                dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
-                TextView dp = (TextView) dialogView.findViewById(R.id.type);
-                TextView nm = (TextView) dialogView.findViewById(R.id.name);
-                TextView mm = (TextView) dialogView.findViewById(R.id.context);
-                TextView dt = (TextView) dialogView.findViewById(R.id.date);
-                TextView tm = (TextView) dialogView.findViewById(R.id.flag);
+                dialogView = View.inflate(DetailAccess.this, R.layout.dialog_detail, null);
+                TextView dp = dialogView.findViewById(R.id.type);
+                TextView nm = dialogView.findViewById(R.id.name);
+                TextView mm = dialogView.findViewById(R.id.context);
+                TextView dt = dialogView.findViewById(R.id.date);
+                TextView tm = dialogView.findViewById(R.id.flag);
 
                 dp.setText(listItem.getType());
                 nm.setText(listItem.getName());
@@ -111,7 +115,9 @@ public class DetailAccess extends Activity {
     ArrayList<String> getSqlList(SQLiteDatabase db, LocalDate day) {
         final ArrayList<String> list = new ArrayList<>();
         try {
-            String sql = "select "+ TableInfo.COLUMN_NAME_TYPE+","+TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
+            // String sql = "select "+ TableInfo.COLUMN_NAME_TYPE+","+TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
+            String sql = "select * from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
+
             Cursor resultSet = db.rawQuery(sql, new String[]{dateHelper.parseDateString(day)});
             while (resultSet.moveToNext()) {
                 String id = resultSet.getString(0);
@@ -121,6 +127,8 @@ public class DetailAccess extends Activity {
                 String date = resultSet.getString(4);
                 String flag = resultSet.getString(5);
                 list.add(id + "☞" + type + "☞"+ name + "☞" + context + "☞" + date + "☞"+ flag);
+
+                System.out.println();
             }
             resultSet.close();
         } catch (Exception e) {e.printStackTrace();}
@@ -133,7 +141,7 @@ public class DetailAccess extends Activity {
         String[][] items = new String[list.size()][];
         for (int i = 0; i < list.size(); i++){
             items[i] = list.get(i).split("☞");
-            adapter.addItem(new ListItem(items[i][0],items[i][1],items[i][2],items[i][3],items[i][4], items[i][5]));
+            adapter.addItem(new ListItem(items[i][0],items[i][1],items[i][2],items[i][3],items[i][4],items[i][5]));
         }
         listView.setAdapter(adapter);
     }
@@ -144,7 +152,7 @@ public class DetailAccess extends Activity {
         editName = dialogView.findViewById(R.id.editName);
         editContext = dialogView.findViewById(R.id.editContext);
         AlertDialog.Builder dlg = new AlertDialog.Builder(context);
-        dlg.setTitle("기록 추가");
+        dlg.setTitle(" ");
         dlg.setView(dialogView);
 
         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -155,7 +163,7 @@ public class DetailAccess extends Activity {
                     sql = "insert into "+ TableInfo.TABLE_NAME+
                             "("+TableInfo.COLUMN_NAME_TYPE+","+ TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+
                             ") values  (?,?,?,?,?)";
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editContext.getText().toString(), dateHelper.parseDateString(day), String.valueOf(R.string.not_done)});
+                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editContext.getText().toString(), dateHelper.parseDateString(day), getString(R.string.not_done)});
                     System.out.println("입력 성공");
                     Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}
@@ -167,17 +175,17 @@ public class DetailAccess extends Activity {
     }
 
     void sqlEdit(SQLiteDatabase db, String ID, LocalDate day) {
-        dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_init,null);
-        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.rutinType);
+        dialogView = View.inflate(DetailAccess.this, R.layout.dialog_edit,null);
+        RadioGroup drinkType = dialogView.findViewById(R.id.rutinType);
         editName = dialogView.findViewById(R.id.editName);
         editContext = dialogView.findViewById(R.id.editContext);
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-        dlg.setTitle("기록 수정");
+        dlg.setTitle(" ");
         dlg.setView(dialogView);
         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                RadioButton checked = (RadioButton) dialogView.findViewById(drinkType.getCheckedRadioButtonId());
+                RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
                 try {
                     sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_TYPE+" = ?,"+ TableInfo.COLUMN_NAME_NAME+" = ?,"+TableInfo.COLUMN_NAME_CONTEXT+"= ? where "+TableInfo.COLUMN_NAME_ID+" = "+ID;
                     db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editContext.getText().toString()});
