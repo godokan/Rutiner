@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements OnItemListener {
     ArrayList<LocalDate> days;
     Button btnPrev, btnNext;
     TextView tvMonth;
-
     DateHelper dateHelper;
 
     @Override
@@ -52,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements OnItemListener {
             dateHelper.setSelectedDate(dateHelper.getSelectedDate().minusMonths(1));
             updateMonth();
         });
+
+
     }
 
     private void setMonth() {
@@ -112,5 +113,11 @@ public class MainActivity extends AppCompatActivity implements OnItemListener {
         Intent intent = new Intent(getApplicationContext(), DetailAccess.class);
         intent.putExtra("Date", date);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateMonth();
     }
 }
