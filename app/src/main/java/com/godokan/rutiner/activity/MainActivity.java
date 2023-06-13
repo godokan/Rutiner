@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnItemListener {
     private void setMonth() {
         tvMonth.setText(String.format(monthSelector(dateHelper.getSelectedDate())+"月"));
         days = daysInMonthArray(dateHelper.getSelectedDate());
-        adapter = new CalendarAdapter(days, MainActivity.this);
+        adapter = new CalendarAdapter(getApplicationContext(), days, MainActivity.this);
         RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
         calendarView.setLayoutManager(manager);
         calendarView.setAdapter(adapter);

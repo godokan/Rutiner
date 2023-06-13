@@ -1,17 +1,23 @@
 package com.godokan.rutiner.adapter;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.godokan.rutiner.OnItemListener;
 import com.godokan.rutiner.R;
+import com.godokan.rutiner.TableInfo;
+import com.godokan.rutiner.helper.DateHelper;
+import com.godokan.rutiner.helper.RutinDbHelper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +35,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     ArrayList<LocalDate> days;
     OnItemListener listener;
 
-    public CalendarAdapter(ArrayList<LocalDate> days, OnItemListener listener) {
+    private final Context context;
+
+    public CalendarAdapter(Context context, ArrayList<LocalDate> days, OnItemListener listener) {
+        this.context = context;
         this.days = days;
         this.listener = listener;
     }
@@ -46,7 +55,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position){
+        RutinDbHelper helper = RutinDbHelper.getInstance(context);
+        SQLiteDatabase db = helper.getWritableDatabase();
+
         LocalDate date = days.get(position);
+        DateHelper dateHelper = DateHelper.getInstance();
+
         try {
             String day = String.valueOf(date.getDayOfMonth());
             holder.dayView.setText(day);
@@ -61,22 +75,21 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         } else
             holder.dayView.setTextColor(Color.parseColor("#6a6a6a"));
 
-
-        holder.dayView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                int year = date.getYear();
-//                int month = date.getMonthValue();
-//                int day = date.getDayOfMonth();
-
-                listener.onItemClick(date);
-
-//                String fullDate = year+"-"+month+"-"+day;
-//
-//                Toast.makeText(holder.dayView.getContext(), fullDate, Toast.LENGTH_SHORT).show();
+        try {
+            Cursor cursor = db.rawQuery(("SELECT count(*) FROM "+ TableInfo.TABLE_NAME+" WHERE "+TableInfo.COLUMN_NAME_DATE+" = ?"), new String[]{dateHelper.parseDateString(date)});
+            if (cursor.moveToNext()) {
+                if(cursor.getInt(0)>0){
+                    holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD_ITALIC);
+                } else {
+                    holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD);
+                }
             }
-        });
+            cursor.close();
+        } catch (Exception e) {
+            System.out.println("메인화면 조회 실패");
+        }
 
+        holder.dayView.setOnClickListener(v -> listener.onItemClick(date));
     }
 
     @Override
