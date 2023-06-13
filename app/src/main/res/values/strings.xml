@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Rutiner</string>
+    <string name="done">완료</string>
+    <string name="not_done">미완료</string>
 </resources>

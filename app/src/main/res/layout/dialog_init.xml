@@ -2,62 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
     <TextView
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/unifont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/drinkType"/>
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:text="습 관 유 형"/>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/drinkType">
+        android:id="@+id/rutinType"
+        android:layout_margin="10dp"
+        android:background="@color/white">
         <RadioButton
+            android:fontFamily="@font/unifont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radSoju"
-            android:text="@string/soju"/>
+            android:id="@+id/radHouse"
+            android:text="집 안 일"/>
         <RadioButton
+            android:fontFamily="@font/unifont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radBeer"
-            android:text="@string/Beer"/>
+            android:id="@+id/radDaily"
+            android:text="일 상"/>
         <RadioButton
+            android:fontFamily="@font/unifont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radMako"
-            android:text="@string/mako"/>
+            android:id="@+id/radStudy"
+            android:text="공 부"/>
         <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radTrad"
-            android:text="@string/trad"/>
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radWest"
-            android:text="@string/west"/>
-        <RadioButton
+            android:fontFamily="@font/unifont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radOther"
-            android:text="@string/otherDrink"/>
+            android:text="기 타"/>
     </RadioGroup>
     <TextView
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/unifont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/drinkName"/>
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:text="습 관 이 름"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
         android:id="@+id/editName"/>
     <TextView
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/unifont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/memo"/>
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:text="습 관 설 명"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:id="@+id/editMemo"/>
+        android:id="@+id/editContext"/>
 </LinearLayout>

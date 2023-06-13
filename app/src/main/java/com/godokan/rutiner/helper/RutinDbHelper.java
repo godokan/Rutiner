@@ -1,10 +1,12 @@
-package com.godokan.rutiner;
+package com.godokan.rutiner.helper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import com.godokan.rutiner.TableInfo;
 
 public class RutinDbHelper extends SQLiteOpenHelper {
     private static RutinDbHelper rutinDbHelper = null;

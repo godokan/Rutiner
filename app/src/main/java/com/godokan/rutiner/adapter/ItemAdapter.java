@@ -1,4 +1,4 @@
-package com.godokan.rutiner;
+package com.godokan.rutiner.adapter;
 
 import static android.view.View.inflate;
 
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.godokan.rutiner.ListItem;
+import com.godokan.rutiner.R;
 
 import java.util.ArrayList;
 

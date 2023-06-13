@@ -1,4 +1,4 @@
-package com.godokan.rutiner;
+package com.godokan.rutiner.adapter;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.godokan.rutiner.OnItemListener;
+import com.godokan.rutiner.R;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,9 +27,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     }
 
     ArrayList<LocalDate> days;
+    OnItemListener listener;
 
-    public CalendarAdapter(ArrayList<LocalDate> days) {
+    public CalendarAdapter(ArrayList<LocalDate> days, OnItemListener listener) {
         this.days = days;
+        this.listener = listener;
     }
 
     public void setDays(ArrayList<LocalDate> days) {this.days = days;}
@@ -43,7 +48,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position){
         LocalDate date = days.get(position);
         try {
-            holder.dayView.setText(String.valueOf(date.getDayOfMonth()));
+            String day = String.valueOf(date.getDayOfMonth());
+            holder.dayView.setText(day);
         } catch (NullPointerException e) {
             holder.dayView.setText("");
         }
@@ -51,7 +57,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         if (position % 7 == 0)
             holder.dayView.setTextColor(Color.parseColor("#ffff4444"));
         else if ((position + 1) % 7 == 0) {
-            System.out.println(position);
             holder.dayView.setTextColor(Color.parseColor("#ff33b5e5"));
         } else
             holder.dayView.setTextColor(Color.parseColor("#6a6a6a"));
@@ -60,13 +65,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         holder.dayView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int year = date.getYear();
-                int month = date.getMonthValue();
-                int day = date.getDayOfMonth();
+//                int year = date.getYear();
+//                int month = date.getMonthValue();
+//                int day = date.getDayOfMonth();
 
-                String fullDate = year+"-"+month+"-"+day;
+                listener.onItemClick(date);
 
-                Toast.makeText(holder.dayView.getContext(), fullDate, Toast.LENGTH_SHORT).show();
+//                String fullDate = year+"-"+month+"-"+day;
+//
+//                Toast.makeText(holder.dayView.getContext(), fullDate, Toast.LENGTH_SHORT).show();
             }
         });
 

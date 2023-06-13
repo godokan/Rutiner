@@ -1,4 +1,4 @@
-package com.godokan.rutiner;
+package com.godokan.rutiner.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,26 +20,37 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.godokan.rutiner.helper.DateHelper.*;
+import com.godokan.rutiner.adapter.ItemAdapter;
+import com.godokan.rutiner.ListItem;
+import com.godokan.rutiner.R;
+import com.godokan.rutiner.helper.DateHelper;
+import com.godokan.rutiner.helper.RutinDbHelper;
+import com.godokan.rutiner.TableInfo;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DetailAccess extends Activity {
 
-    EditText editName, editMemo;
+    EditText editName, editContext;
     View dialogView;
     ItemAdapter adapter;
     ListView listView;
     String sql = "";
+    DateHelper dateHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailaccess);
         Intent intent = getIntent();
-        final String today = intent.getStringExtra("Date");
+        final LocalDate today = (LocalDate)intent.getSerializableExtra("Date");
 
         listView = findViewById(R.id.listView);
         Button btnAdd = findViewById(R.id.btnAdd);
         RutinDbHelper helper = RutinDbHelper.getInstance(DetailAccess.this);
+        dateHelper = DateHelper.getInstance();
         SQLiteDatabase db = helper.getWritableDatabase();
         updateList(db, today);
 
@@ -56,15 +67,11 @@ public class DetailAccess extends Activity {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.editItem:
-                                sqlEdit(db, listItem.getId(),today);
-                                break;
-                            case  R.id.removeItem:
-                                sqlRemove(db, listItem.getId(), today);
-                                break;
-                            default:
-                                break;
+                        int itemId = menuItem.getItemId();
+                        if (itemId == R.id.editItem) {
+                            sqlEdit(db, listItem.getId(), today);
+                        } else if (itemId == R.id.removeItem) {
+                            sqlRemove(db, listItem.getId(), today);
                         }
                         return false;
                     }
@@ -101,11 +108,11 @@ public class DetailAccess extends Activity {
         });
     }
 
-    ArrayList<String> getSqlList(SQLiteDatabase db, String day) {
+    ArrayList<String> getSqlList(SQLiteDatabase db, LocalDate day) {
         final ArrayList<String> list = new ArrayList<>();
         try {
-            String sql = "select "+TableInfo.COLUMN_NAME_TYPE+","+TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
-            Cursor resultSet = db.rawQuery(sql, new String[]{day});
+            String sql = "select "+ TableInfo.COLUMN_NAME_TYPE+","+TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
+            Cursor resultSet = db.rawQuery(sql, new String[]{dateHelper.parseDateString(day)});
             while (resultSet.moveToNext()) {
                 String id = resultSet.getString(0);
                 String type = resultSet.getString(1);
@@ -120,7 +127,7 @@ public class DetailAccess extends Activity {
         return list;
     }
 
-    void updateList(SQLiteDatabase db, String day) {
+    void updateList(SQLiteDatabase db, LocalDate day) {
         ArrayList<String> list = getSqlList(db, day);
         adapter = new ItemAdapter(DetailAccess.this);
         String[][] items = new String[list.size()][];
@@ -131,23 +138,24 @@ public class DetailAccess extends Activity {
         listView.setAdapter(adapter);
     }
 
-    void sqlInit(Context context, SQLiteDatabase db, String day) {
-        dialogView = (View) View.inflate(context, R.layout.dialog_init,null);
-        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.drinkType);
+    void sqlInit(Context context, SQLiteDatabase db, LocalDate day) {
+        dialogView = View.inflate(context, R.layout.dialog_init,null);
+        RadioGroup drinkType = dialogView.findViewById(R.id.rutinType);
         editName = dialogView.findViewById(R.id.editName);
-        editMemo = dialogView.findViewById(R.id.editMemo);
+        editContext = dialogView.findViewById(R.id.editContext);
         AlertDialog.Builder dlg = new AlertDialog.Builder(context);
         dlg.setTitle("기록 추가");
         dlg.setView(dialogView);
+
         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                RadioButton checked = (RadioButton) dialogView.findViewById(drinkType.getCheckedRadioButtonId());
+                RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
                 try {
                     sql = "insert into "+ TableInfo.TABLE_NAME+
-                            "("+TableInfo.COLUMN_NAME_DTYPE+","+ TableInfo.COLUMN_NAME_DNAME+","+TableInfo.COLUMN_NAME_MEMO+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_TIME+
+                            "("+TableInfo.COLUMN_NAME_TYPE+","+ TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+
                             ") values  (?,?,?,?,?)";
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString(), dateHelper.getNowDate(), dateHelper.getNowTime()});
+                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editContext.getText().toString(), dateHelper.parseDateString(day), String.valueOf(R.string.not_done)});
                     System.out.println("입력 성공");
                     Toast.makeText(getApplicationContext(),"입력 완료", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"입력 실패", Toast.LENGTH_LONG).show();}
@@ -158,22 +166,21 @@ public class DetailAccess extends Activity {
         dlg.show();
     }
 
-    void sqlEdit(SQLiteDatabase db, String ID, String day) {
+    void sqlEdit(SQLiteDatabase db, String ID, LocalDate day) {
         dialogView = (View) View.inflate(DetailAccess.this, R.layout.dialog_init,null);
-        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.drinkType);
+        RadioGroup drinkType = (RadioGroup) dialogView.findViewById(R.id.rutinType);
         editName = dialogView.findViewById(R.id.editName);
-        editMemo = dialogView.findViewById(R.id.editMemo);
+        editContext = dialogView.findViewById(R.id.editContext);
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
-        AlertDialog alert = dlg.create();
-        dlg.setTitle("기록수정");
+        dlg.setTitle("기록 수정");
         dlg.setView(dialogView);
         dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 RadioButton checked = (RadioButton) dialogView.findViewById(drinkType.getCheckedRadioButtonId());
                 try {
-                    sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_DTYPE+" = ?,"+ TableInfo.COLUMN_NAME_DNAME+" = ?,"+TableInfo.COLUMN_NAME_MEMO+"= ? where "+TableInfo.COLUMN_NAME_ID+" = "+ID;
-                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editMemo.getText().toString()});
+                    sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_TYPE+" = ?,"+ TableInfo.COLUMN_NAME_NAME+" = ?,"+TableInfo.COLUMN_NAME_CONTEXT+"= ? where "+TableInfo.COLUMN_NAME_ID+" = "+ID;
+                    db.execSQL(sql, new String[]{checked.getText().toString(), editName.getText().toString(), editContext.getText().toString()});
                     System.out.println("수정 성공");
                     Toast.makeText(getApplicationContext(),"수정 완료", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"수정 실패", Toast.LENGTH_LONG).show();}
@@ -184,7 +191,7 @@ public class DetailAccess extends Activity {
         dlg.show();
     }
 
-    void sqlRemove(SQLiteDatabase db, String ID, String day) {
+    void sqlRemove(SQLiteDatabase db, String ID, LocalDate day) {
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
         AlertDialog alert = dlg.create();
         dlg.setTitle("기록삭제");

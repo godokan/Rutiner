@@ -1,56 +1,63 @@
-package com.godokan.rutiner;
+package com.godokan.rutiner.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.godokan.rutiner.OnItemListener;
+import com.godokan.rutiner.adapter.CalendarAdapter;
+import com.godokan.rutiner.R;
+import com.godokan.rutiner.helper.DateHelper;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemListener {
     RecyclerView calendarView;
     CalendarAdapter adapter;
-    LocalDate selectedDate;
     ArrayList<LocalDate> days;
     Button btnPrev, btnNext;
     TextView tvMonth;
+
+    DateHelper dateHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        selectedDate = LocalDate.now();
+        dateHelper = DateHelper.getInstance();
+        dateHelper.setNowDate();
         calendarView = findViewById(R.id.recyclerView);
         btnPrev = findViewById(R.id.btnPrev);
         btnNext = findViewById(R.id.btnNext);
         tvMonth = findViewById(R.id.tvMonth);
+
         setMonth();
 
-        System.out.println("Set");
-
         btnNext.setOnClickListener(v->{
-            selectedDate = selectedDate.plusMonths(1);
+            dateHelper.setSelectedDate(dateHelper.getSelectedDate().plusMonths(1));
             updateMonth();
         });
 
         btnPrev.setOnClickListener(v->{
-            selectedDate = selectedDate.minusMonths(1);
+            dateHelper.setSelectedDate(dateHelper.getSelectedDate().minusMonths(1));
             updateMonth();
         });
     }
 
     private void setMonth() {
-        tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
-        days = daysInMonthArray(selectedDate);
-        adapter = new CalendarAdapter(days);
+        tvMonth.setText(String.format(monthSelector(dateHelper.getSelectedDate())+"月"));
+        days = daysInMonthArray(dateHelper.getSelectedDate());
+        adapter = new CalendarAdapter(days, MainActivity.this);
         RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
         calendarView.setLayoutManager(manager);
         calendarView.setAdapter(adapter);
@@ -58,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void updateMonth() {
-        tvMonth.setText(String.format(monthSelector(selectedDate)+"月"));
-        days = daysInMonthArray(selectedDate);
+        tvMonth.setText(String.format(monthSelector(dateHelper.getSelectedDate())+"月"));
+        days = daysInMonthArray(dateHelper.getSelectedDate());
         adapter.setDays(days);
         adapter.notifyDataSetChanged();
     }
@@ -98,5 +105,12 @@ public class MainActivity extends AppCompatActivity {
     private String monthSelector(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M");
         return date.format(formatter);
+    }
+
+    @Override
+    public void onItemClick(LocalDate date) {
+        Intent intent = new Intent(getApplicationContext(), DetailAccess.class);
+        intent.putExtra("Date", date);
+        startActivity(intent);
     }
 }
