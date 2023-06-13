@@ -106,7 +106,28 @@ public class DetailAccess extends Activity {
 
                 dlg.setView(dialogView);
                 dlg.setTitle(" ");
-                dlg.setNegativeButton("닫기", null);
+                if(tm.getText().toString().equals(getString(R.string.not_done))){
+                    dlg.setNegativeButton("상태변경", (dialog, which) -> {
+                        try {
+                            sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_FLAG+" = ? where "+TableInfo.COLUMN_NAME_ID+" = "+listItem.getId();
+                            db.execSQL(sql, new String[]{getString(R.string.done)});
+                            System.out.println("변경 성공");
+                            Toast.makeText(getApplicationContext(),"변경 완료", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"변경 실패", Toast.LENGTH_LONG).show();}
+                        finally {updateList(db, today);}
+                    });
+                } else {
+                    dlg.setNegativeButton("상태변경", (dialog, which) -> {
+                        try {
+                            sql = "update "+TableInfo.TABLE_NAME+" set "+TableInfo.COLUMN_NAME_FLAG+" = ? where "+TableInfo.COLUMN_NAME_ID+" = "+listItem.getId();
+                            db.execSQL(sql, new String[]{getString(R.string.not_done)});
+                            System.out.println("변경 성공");
+                            Toast.makeText(getApplicationContext(),"변경 완료", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {e.printStackTrace(); Toast.makeText(getApplicationContext(),"변경 실패", Toast.LENGTH_LONG).show();}
+                        finally {updateList(db, today);}
+                    });
+                }
+                dlg.setPositiveButton("닫기", null);
                 dlg.show();
             }
         });
@@ -115,7 +136,6 @@ public class DetailAccess extends Activity {
     ArrayList<String> getSqlList(SQLiteDatabase db, LocalDate day) {
         final ArrayList<String> list = new ArrayList<>();
         try {
-            // String sql = "select "+ TableInfo.COLUMN_NAME_TYPE+","+TableInfo.COLUMN_NAME_NAME+","+TableInfo.COLUMN_NAME_CONTEXT+","+TableInfo.COLUMN_NAME_DATE+","+TableInfo.COLUMN_NAME_FLAG+","+TableInfo.COLUMN_NAME_ID+" from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
             String sql = "select * from " + TableInfo.TABLE_NAME + " where " + TableInfo.COLUMN_NAME_DATE + " = ?";
 
             Cursor resultSet = db.rawQuery(sql, new String[]{dateHelper.parseDateString(day)});
@@ -155,7 +175,7 @@ public class DetailAccess extends Activity {
         dlg.setTitle(" ");
         dlg.setView(dialogView);
 
-        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+        dlg.setNegativeButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
@@ -170,7 +190,7 @@ public class DetailAccess extends Activity {
                 finally {updateList(db, day);}
             }
         });
-        dlg.setNegativeButton("취소", null);
+        dlg.setPositiveButton("취소", null);
         dlg.show();
     }
 
@@ -182,7 +202,7 @@ public class DetailAccess extends Activity {
         AlertDialog.Builder dlg = new AlertDialog.Builder(DetailAccess.this);
         dlg.setTitle(" ");
         dlg.setView(dialogView);
-        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+        dlg.setNegativeButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 RadioButton checked = dialogView.findViewById(drinkType.getCheckedRadioButtonId());
@@ -195,7 +215,7 @@ public class DetailAccess extends Activity {
                 finally {updateList(db, day);}
             }
         });
-        dlg.setNegativeButton("취소", null);
+        dlg.setPositiveButton("취소", null);
         dlg.show();
     }
 
@@ -204,7 +224,7 @@ public class DetailAccess extends Activity {
         AlertDialog alert = dlg.create();
         dlg.setTitle("기록삭제");
         dlg.setMessage("삭제하시겠습니까?");
-        dlg.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+        dlg.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
@@ -216,7 +236,7 @@ public class DetailAccess extends Activity {
                 alert.dismiss();
             }
         });
-        dlg.setNegativeButton("취소", null);
+        dlg.setPositiveButton("취소", null);
         dlg.show();
     }
 }
