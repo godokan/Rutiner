@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_custom_calendar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:background="@drawable/black_border"
     android:orientation="vertical"
     android:layout_margin="10dp" >
@@ -123,7 +124,7 @@
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="350dp"
         android:background="@drawable/black_border_white"
         android:id="@+id/recyclerView"
         android:overScrollMode="never"/>

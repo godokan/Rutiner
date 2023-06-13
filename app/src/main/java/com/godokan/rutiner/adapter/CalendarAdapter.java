@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.godokan.rutiner.OnItemListener;
@@ -80,6 +81,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             if (cursor.moveToNext()) {
                 if(cursor.getInt(0)>0){
                     holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD_ITALIC);
+                    holder.dayView.setBackground(AppCompatResources.getDrawable(context, R.drawable.bottom_line));
                 } else {
                     holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD);
                 }
