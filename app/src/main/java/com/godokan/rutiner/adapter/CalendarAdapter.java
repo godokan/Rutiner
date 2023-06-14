@@ -77,17 +77,20 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             holder.dayView.setTextColor(Color.parseColor("#6a6a6a"));
 
         try {
-            Cursor cursor = db.rawQuery(("SELECT count(*) FROM "+ TableInfo.TABLE_NAME+" WHERE "+TableInfo.COLUMN_NAME_DATE+" = ?"), new String[]{dateHelper.parseDateString(date)});
-            if (cursor.moveToNext()) {
-                if(cursor.getInt(0)>0){
-                    holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD_ITALIC);
-                    holder.dayView.setBackground(AppCompatResources.getDrawable(context, R.drawable.bottom_line));
-                } else {
-                    holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD);
+            if(date!=null){
+                Cursor cursor = db.rawQuery(("SELECT count(*) FROM "+ TableInfo.TABLE_NAME+" WHERE "+TableInfo.COLUMN_NAME_DATE+" = ?"), new String[]{dateHelper.parseDateString(date)});
+                if (cursor.moveToNext()) {
+                    if(cursor.getInt(0)>0){
+                        holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD_ITALIC);
+                        holder.dayView.setBackground(AppCompatResources.getDrawable(context, R.drawable.bottom_line));
+                    } else {
+                        holder.dayView.setTypeface(holder.dayView.getTypeface(), Typeface.BOLD);
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("메인화면 조회 실패");
         }
 
